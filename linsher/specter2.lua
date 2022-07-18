@@ -1,6 +1,7 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/forumsLib/main/source.lua"))()
 local Forums = Library.new('Linsher | Specter 2 GUI')
 local Evidence,Visuals,Teleports,Changers,Misc
+
 if not game.ReplicatedStorage:FindFirstChild('Characters') then 
     Evidence = Forums:NewSection('Evidence')
     Visuals = Forums:NewSection('Visuals')
@@ -44,7 +45,6 @@ if not game.ReplicatedStorage:FindFirstChild('Characters') then
 end
 
 -- Visuals
-
 if not game.ReplicatedStorage:FindFirstChild('Characters') then 
     local Ghost = nil
     Visuals:NewToggle('Ghost ESP', function(t)
@@ -170,10 +170,55 @@ if not game.ReplicatedStorage:FindFirstChild('Characters') then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Map.Rooms[Location].Hitbox.CFrame
         end 
     end) 
+    
+    Teleports:Seperator()
+    
+    local FoundObjects = {}
+    for i,v in pairs(workspace.Map.PossessionSpawns:GetChildren()) do 
+        if workspace.Map:FindFirstChild(tostring(v)) then 
+            table.insert(FoundObjects, tostring(v))
+        end  
+    end 
+    
+    if #FoundObjects == 0 then 
+        FoundObjects[1] = 'None'
+    end 
+    
+    local Object = nil 
+    Teleports:NewDropdown('Cursed Possession', FoundObjects, function(t)
+        if FoundObjects[1] ~= 'None' then
+            Object = t
+        end 
+    end)
+
+    Teleports:NewButton('Teleport', function()
+        if Object ~= nil then 
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Map:FindFirstChild(Object):FindFirstChildWhichIsA('BasePart').CFrame
+        end 
+    end) 
+    
+    Teleports:Seperator()
+    
+    local Bones = {}
+    for i,v in pairs(workspace:GetChildren()) do 
+        if tostring(v) == 'Bone' then 
+            table.insert(Bones, v)
+        end 
+    end 
+    
+    local Bone = nil
+    Teleports:NewDropdown('Bone', Bones, function(t)
+        Bone = t
+    end)
+    
+    Teleports:NewButton('Teleport', function()
+        if Bone ~= nil then 
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace[Bone].CFrame
+        end 
+    end)  
 end 
 
 -- Changers
-
 if game.ReplicatedStorage:FindFirstChild('Characters') then 
     local Characters = {}
     for i,v in pairs(game.ReplicatedStorage.Characters:GetChildren()) do 
